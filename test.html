@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>部屋特定プログラム</title>
+</head>
+<body>
+    <h1>部屋特定プログラム</h1>
+    <p>デバイスの位置情報を検出して、どの部屋にいるかを特定します。</p>
+    <button onclick="getLocation()">位置情報を取得する</button>
+	 <div id="gps"></div>
+    <div id="result"></div>
+
+    <script>
+        // 部屋のデータ
+        const rooms = [
+            { name: "リビングルーム", startGPS: { latitude: 36.323889, longitude: 139.199221 }, endGPS: { latitude: 36.323949, longitude: 139.199289 } },
+            { name: "寝室", startGPS: { latitude: 37.7741, longitude: -122.4189 }, endGPS: { latitude: 37.7743, longitude: -122.4181 } }
+            // 他の部屋も追加可能
+        ];
+
+        // 部屋を特定する関数
+        function findRoom(deviceGPS, rooms) {
+            for (const room of rooms) {
+                const { startGPS, endGPS } = room;
+                if (deviceGPS.latitude >= Math.min(startGPS.latitude, endGPS.latitude) &&
+                    deviceGPS.latitude <= Math.max(startGPS.latitude, endGPS.latitude) &&
+                    deviceGPS.longitude >= Math.min(startGPS.longitude, endGPS.longitude) &&
+                    deviceGPS.longitude <= Math.max(startGPS.longitude, endGPS.longitude)) {
+                    return room.name;
+                }
+            }
+            return "部屋が特定できませんでした";
+        }
+
+        // 位置情報を取得する関数
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+					 
+            } else {
+                document.getElementById("result").textContent = "位置情報を取得できませんでした";
+            }
+        }
+
+        // 位置情報が取得された時の処理
+        function showPosition(position) {
+            const deviceGPS = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            };
+				document.getElementById("gps").textContent = deviceGPS.latitude+","+deviceGPS.longitude;
+            const currentRoom = findRoom(deviceGPS, rooms);
+            document.getElementById("result").textContent = "デバイスは次の部屋にいます: " + currentRoom;
+        }
+    </script>
+</body>
+</html>
