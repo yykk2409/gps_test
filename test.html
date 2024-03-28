@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -28,7 +30,10 @@
                     deviceGPS.longitude >= Math.min(startGPS.longitude, endGPS.longitude) &&
                     deviceGPS.longitude <= Math.max(startGPS.longitude, endGPS.longitude)) {
                     return room.name;
-                }
+		}else if(deviceGPS.latitude >= Math.min(startGPS.latitude, endGPS.latitude)&&
+                    deviceGPS.latitude <= Math.max(startGPS.latitude, endGPS.latitude)){
+		    console.log("latitude is ok")
+		}
             }
             return "部屋が特定できませんでした";
         }
